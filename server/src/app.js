@@ -20,11 +20,10 @@ app.use(cors({
 
 import userRouter from "./routes/user.routes.js"
 
-//routes declaration
+// routes declaration
 
-app.use("/api/users", userRouter)
-app.post("/", async (req, res)=>{
-    res.status(200).send({message : "OK"});
-})
+app.use("/api/users", userRouter);
+
+// Secured routes
 
 export { app };

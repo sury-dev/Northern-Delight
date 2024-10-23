@@ -4,14 +4,6 @@ import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
     {
-        username:{
-            type : String,
-            required : true,
-            unique : true,
-            lowercase : true,
-            trim : true,
-            index : true
-        },
         email:{
             type : String,
             required : true,
@@ -25,22 +17,14 @@ const userSchema = new Schema(
             trim : true,
             index : true
         },
-        avatar:{
-            type : String, //clodinary url
-            required : true
-        },
-        coverImage:{
-            type : String //clodinary url
-        },
-        watchHistory:[
-            {
-                type:Schema.Types.ObjectId,
-                ref:"Video"
-            }
-        ],
         password : {
             type : String,
             required : [true, "Password is required"]
+        },
+        phoneNumber : {
+            type : String,
+            required : true,
+            trim : true
         },
         refreshToken : {
             type : String

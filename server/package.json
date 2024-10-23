@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sury-dev/MEN-Backend-Starter.git"
+    "url": "git+https://github.com/sury-dev/Northern-Delight.git"
   },
   "keywords": [
     "backend"
@@ -17,9 +17,9 @@
   "author": "Suryansh Pandey",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sury-dev/MEN-Backend-Starter/issues"
+    "url": "https://github.com/sury-dev/Northern-Delight/issues"
   },
-  "homepage": "https://github.com/sury-dev/MEN-Backend-Starter#readme",
+  "homepage": "https://github.com/sury-dev/Northern-Delight#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
