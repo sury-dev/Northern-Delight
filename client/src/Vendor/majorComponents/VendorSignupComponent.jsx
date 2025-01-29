@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
+import ownerService from "../../server/ownerService.js";
+import { useNavigate } from "react-router-dom";
 import { Input } from "../UI";
 
 function VendorSignupComponent() {
@@ -12,6 +14,7 @@ function VendorSignupComponent() {
     const [name, setName] = useState("");
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState("");
     const [touchedFields, setTouchedFields] = useState({});
 
     const validateField = (name, value) => {
@@ -75,7 +78,7 @@ function VendorSignupComponent() {
 
     const handleFileChange = (file) => {
         if (file) {
-            if (file.size > 2 ) {
+            if (file.size > 2 * 1024 * 1024) {
                 setErrors((prev) => ({ ...prev, avatar: "File size must be under 2MB" }));
             }
             const reader = new FileReader();
@@ -90,10 +93,21 @@ function VendorSignupComponent() {
         errors.avatar && setErrors((prev) => ({ ...prev, avatar: "" }));
     };
 
-    const onSubmit = (data) => {
+    const navigate = useNavigate();
+
+    const onSubmit = async (data) => {
         Object.keys(data).forEach((field) => validateField(field, data[field]));
         if (Object.values(errors).some((err) => err !== "")) return;
-        console.log("Form submitted with:", data);
+        console.log(data);
+        const userData = await ownerService.createOwner({ ...data, avatar: data.avatar });
+        if (userData && userData.status === 201) {
+            navigate("/vendor/auth/login");
+        }
+        else {
+            const regex = /Error:\s*(.*?)(<br>|<\/pre>)/;
+            const match = userData.data.match(regex);
+            setServerError(match ? match[1] : "Something went wrong");
+        }
     };
 
     return (
@@ -146,22 +160,82 @@ function VendorSignupComponent() {
                         )}
                     </div>
                 </div>
-                        {errors.avatar && <p className="error">{errors.avatar}</p>}
+                {errors.avatar && <p className="error">{errors.avatar}</p>}
+                {serverError && <p className="error">{serverError}</p>}
 
                 {/* Input Fields */}
-                {["name", "email", "phoneNumber", "username", "password", "confirmPassword"].map((field) => (
-                    <div key={field} className="w-full">
-                        <Input
-                            type={field.includes("password") ? "password" : "text"}
-                            placeholder={field.replace(/([A-Z])/g, " $1")}
-                            className="vendor-input-box"
-                            {...register(field, {
-                                onBlur: () => handleBlur(field),
-                            })}
-                        />
-                        {touchedFields[field] && errors[field] && <p className="error">{errors[field]}</p>}
-                    </div>
-                ))}
+                <div className="w-full">
+                    <Input
+                        type="text"
+                        placeholder="Your Name"
+                        className="vendor-input-box"
+                        {...register("name", {
+                            onBlur: () => handleBlur("name"),
+                        })}
+                    />
+                    {touchedFields.name && errors.name && <p className="error">{errors.name}</p>}
+                </div>
+
+                <div className="w-full">
+                    <Input
+                        type="text"
+                        placeholder="Your Email"
+                        className="vendor-input-box"
+                        {...register("email", {
+                            onBlur: () => handleBlur("email"),
+                        })}
+                    />
+                    {touchedFields.email && errors.email && <p className="error">{errors.email}</p>}
+                </div>
+
+                <div className="w-full">
+                    <Input
+                        type="text"
+                        placeholder="Your Phone Number"
+                        className="vendor-input-box"
+                        {...register("phoneNumber", {
+                            onBlur: () => handleBlur("phoneNumber"),
+                        })}
+                    />
+                    {touchedFields.phoneNumber && errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
+                </div>
+
+                <div className="w-full">
+                    <Input
+                        type="text"
+                        placeholder="Create a Username"
+                        className="vendor-input-box"
+                        {...register("username", {
+                            onBlur: () => handleBlur("username"),
+                        })}
+                    />
+                    {touchedFields.username && errors.username && <p className="error">{errors.username}</p>}
+                </div>
+
+                <div className="w-full">
+                    <Input
+                        type="password"
+                        placeholder="Create Password"
+                        className="vendor-input-box"
+                        {...register("password", {
+                            onBlur: () => handleBlur("password"),
+                        })}
+                    />
+                    {touchedFields.password && errors.password && <p className="error">{errors.password}</p>}
+                </div>
+
+                <div className="w-full">
+                    <Input
+                        type="password"
+                        placeholder="Confirm Password"
+                        className="vendor-input-box"
+                        {...register("confirmPassword", {
+                            onBlur: () => handleBlur("confirmPassword"),
+                        })}
+                    />
+                    {touchedFields.confirmPassword && errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+                </div>
+
 
                 {selected === "admin" && (
                     <div className="w-full">
