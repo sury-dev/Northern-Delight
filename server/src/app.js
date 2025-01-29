@@ -18,11 +18,15 @@ app.use(cors({
 
 //routes
 
-import userRouter from "./routes/user.routes.js"
+import ownerRouter from "./routes/owner.routes.js"
+import employeeRouter from "./routes/employee.routes.js"
+import activityLoggerRouter from "./routes/activityLogger.routes.js"
 
 // routes declaration
 
-app.use("/api/users", userRouter);
+app.use("/api/owner", ownerRouter);
+app.use("/api/employee", employeeRouter);
+app.use("/api/activity-logger", activityLoggerRouter);
 
 // Secured routes
 

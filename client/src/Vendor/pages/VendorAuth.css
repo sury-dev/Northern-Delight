@@ -1,0 +1,47 @@
+.full-container{
+    width: 100%;
+    min-height: 100vh;
+}
+.auth-page{
+    background-color: #121212;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#leaf1{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100px;
+    background-color: rgba(45, 212, 191, 0.5);
+    border-radius: 0px 100px 0px 100px;
+}
+#leaf2{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 200px;
+    background-color: rgba(16, 185, 129, 0.5);
+    border-radius: 0px 100px 0px 100px;
+}
+#leaf3{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 200px;
+    height: 100px;
+    background-color: rgba(45, 212, 191, 0.5);
+    border-radius: 0px 100px 0px 100px;
+}
+#leaf4{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 200px;
+    background-color: rgba(16, 185, 129, 0.5);
+    border-radius: 0px 100px 0px 100px;
+}
