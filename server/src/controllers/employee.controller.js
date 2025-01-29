@@ -27,11 +27,13 @@ const generateAccessAndRefreshToken = async (employeeId) => {
 
 const registerEmployee = asyncHandler(async (req, res) => {
 
+    let avatarLocalPath;
     try {
-        const { name, username, email, password, confirmPassword, phoneNumber, vid, jobTitle } = req.body;
-
+        const { name, username, email, password, confirmPassword, phoneNumber, vid, jobTitle, gender } = req.body;
+        console.log("req.body : ", req.body);
+        console.log("req.file : ", req.file);
         if (
-            [name, username, email, password, phoneNumber, jobTitle].some(
+            [name, username, email, password, phoneNumber, jobTitle, gender].some(
                 (field) => field?.trim() === ""
             )
         ) {
@@ -52,15 +54,13 @@ const registerEmployee = asyncHandler(async (req, res) => {
         }
 
         let avatar;
-        let avatarLocalPath;
         let avatarObj;
-    
         if (req.file?.path) {
             avatarLocalPath = req.file.path;
             avatarObj = await uploadOnCloudinary(avatarLocalPath, "employee"); // Upload to Cloudinary if a file exists
             avatar = avatarObj.url;
         } else {
-            avatar = `https://avatar.iran.liara.run/public/boy?username=${username}`; // Default avatar URL
+            avatar = `https://avatar.iran.liara.run/public/${gender}?username=${username}`; // Default avatar URL
         }
 
         const employee = await Employee.create({
@@ -104,7 +104,9 @@ const registerEmployee = asyncHandler(async (req, res) => {
             new ApiResponse(201, createdEmployee, "Employee registered successfully")
         );
     } catch (error) {
-        fs.unlinkSync(avatarLocalPath);
+        if(avatarLocalPath){
+            fs.unlinkSync(avatarLocalPath); // Delete the file from the server if an error occurs
+        }
         throw new ApiError(500, error?.message || "Something went wrong while registering the employee");
     }
 

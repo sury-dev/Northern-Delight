@@ -27,11 +27,12 @@ const generateAccessAndRefreshToken = async (ownerId) => {
 
 const registerOwner = asyncHandler(async (req, res) => {
 
+    let avatarLocalPath;
     try {
-        const { name, username, email, password, confirmPassword, phoneNumber, key } = req.body;
+        const { name, username, email, password, confirmPassword, phoneNumber, key, gender } = req.body;
     
         if (
-            [name, username, email, password, phoneNumber, key].some(
+            [name, username, email, password, phoneNumber, key, gender].some(
                 (field) => field?.trim() === ""
             )
         ) {
@@ -56,7 +57,6 @@ const registerOwner = asyncHandler(async (req, res) => {
         }
     
         let avatar;
-        let avatarLocalPath;
         let avatarObj;
     
         if (req.file?.path) {
@@ -64,7 +64,7 @@ const registerOwner = asyncHandler(async (req, res) => {
             avatarObj = await uploadOnCloudinary(avatarLocalPath, "owners"); // Upload to Cloudinary if a file exists
             avatar = avatarObj.url;
         } else {
-            avatar = `https://avatar.iran.liara.run/public/boy?username=${username}`; // Default avatar URL
+            avatar = `https://avatar.iran.liara.run/public/${gender}?username=${username}`; // Default avatar URL
         }
     
         const owner = await Owner.create({
@@ -106,7 +106,9 @@ const registerOwner = asyncHandler(async (req, res) => {
             new ApiResponse(201, createdOwner, "Owner registered successfully")
         );
     } catch (error) {
-        fs.unlinkSync(avatarLocalPath);
+        if(avatarLocalPath){
+            fs.unlinkSync(avatarLocalPath); // Delete the file from the server if an error occurs
+        }
         throw new ApiError(500, error?.message || "Something went wrong while registering the owner");
     }
 
