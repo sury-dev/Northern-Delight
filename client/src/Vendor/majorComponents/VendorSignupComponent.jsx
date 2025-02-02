@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import ownerService from "../../server/ownerService.js";
+import vendorService from "../../server/vendorService.js";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../UI";
 
@@ -98,8 +98,7 @@ function VendorSignupComponent() {
     const onSubmit = async (data) => {
         Object.keys(data).forEach((field) => validateField(field, data[field]));
         if (Object.values(errors).some((err) => err !== "")) return;
-        console.log(data);
-        const userData = await ownerService.createOwner({ ...data, avatar: data.avatar });
+        const userData = await vendorService.createVendor({ ...data, avatar: data.avatar });
         if (userData && userData.status === 201) {
             navigate("/vendor/auth/login");
         }

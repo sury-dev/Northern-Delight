@@ -8,41 +8,63 @@ import App from './App.jsx'
 import Vendor from './Vendor.jsx'
 import { VendorAuth, VendorDashboard } from './Vendor/pages/index.js'
 import VendorRouteProtector from './Vendor/auth/VendorRouteProtector.jsx'
-import { VendorLoginComponent, VendorSignupComponent } from './Vendor/majorComponents/index.js'
+import { VendorLoginComponent, VendorSignupComponent, EmployeesComponent } from './Vendor/majorComponents/index.js'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />
+    element: <App />,
   },
   {
     path: '/vendor',
     element: <Vendor />,
     children: [
       {
-        path: 'auth',
-        element: <VendorAuth />,
-        children : [
+        path: '',
+        element: (
+          <VendorRouteProtector authentication={true}>
+            <VendorDashboard />
+          </VendorRouteProtector>
+        ),
+        children: [
           {
-            path : 'login',
-            element : <VendorRouteProtector authentication={false}><VendorLoginComponent /></VendorRouteProtector>
-          },
-          {
-            path : 'register',
-            element : <VendorRouteProtector authentication={false}><VendorSignupComponent /></VendorRouteProtector>
+            path: 'employees',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <EmployeesComponent />
+              </VendorRouteProtector>
+            ),
           }
         ]
       },
       {
-        path : '',
-        element : <VendorRouteProtector authentication={false}><VendorDashboard /></VendorRouteProtector>
-      }
-    ]
-  }
-])
+        path: 'auth',
+        element: <VendorAuth />,
+        children: [
+          {
+            path: 'login',
+            element: (
+              <VendorRouteProtector authentication={false}>
+                <VendorLoginComponent />
+              </VendorRouteProtector>
+            ),
+          },
+          {
+            path: 'register',
+            element: (
+              <VendorRouteProtector authentication={false}>
+                <VendorSignupComponent />
+              </VendorRouteProtector>
+            ),
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
+    <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
-)
+);

@@ -1,1 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poetsen+One&display=swap');
 @import "tailwindcss";
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Outfit";
+}
+.divider{
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background-color: #2F2F2F;
+}

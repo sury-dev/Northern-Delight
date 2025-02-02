@@ -264,3 +264,22 @@
     font-size: 14px;
     text-align: center;
 }
+
+.last-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 1rem;
+}
+.last-box p{
+    color: white;
+    font-size: 1rem;
+}
+.last-box p a{
+    color: #14b8a6;
+    font-size: 1rem;
+    text-decoration: none;
+    font-weight: bold !important;
+}

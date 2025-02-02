@@ -1,0 +1,102 @@
+.sideBar {
+    height: calc(100vh - 40px);
+    width: 20%;
+    background: rgba(31, 31, 31, 0.5);
+    backdrop-filter: blur(10px);
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+.navUl {
+    width: 100%;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Navigation Buttons */
+.navBtns {
+    display: flex;
+    width: 100%;
+    padding: 7px 20px;
+    padding-left: 40px;
+    color: white;
+    text-decoration: none;
+    background: transparent;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+    justify-content: flex-start;
+    gap: 20px;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.navBtns.active{
+    background: #2dd4be42;
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+}
+.navBtns:hover {
+    background: #2dd4be88;
+}
+.navBtns:active{
+    transform: scale(0.95);
+}
+
+.navBtns img{
+    height: 1.5rem;
+}
+
+.profile-picture-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0; /* Prevents collapsing */
+}
+
+/* Image Container with Min Width */
+.image-container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 30%; /* Ensures it's at least 30% of parent */
+    max-width: 100px; /* Limits size to prevent overflow */
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #2DD4BF;
+    overflow: hidden;
+}
+
+/* Vendor Info with Truncation */
+.vendor-info {
+    flex-grow: 1; /* Takes remaining space */
+    max-width: 70%; /* Ensures it doesn't exceed 70% of parent */
+    overflow: hidden;
+}
+
+/* Welcome Text */
+.vendor-info p {
+    color: white;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Vendor Name with Ellipsis */
+.vendor-info h3 {
+    color: white;
+    font-size: 1.5rem;
+    line-height: 1.7rem;
+    margin: 0;
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    display: block;
+}

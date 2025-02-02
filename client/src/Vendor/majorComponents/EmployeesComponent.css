@@ -1,0 +1,124 @@
+.employeesComponent {
+    position: relative;
+    padding-top: 80px;
+    /* Adjust the padding to account for the fixed header */
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(45, 212, 191, 0.5) rgba(0, 0, 0, 0.5);
+}
+
+.header {
+    position: fixed;
+    /* Fixed position to keep it at the top */
+    top: 0;
+    left: 0;
+    width: calc(100% - 11px);
+    height: 80px;
+    padding: 10px 20px;
+    z-index: 1000;
+    /* Ensure the header stays on top of other content */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #121212;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.header-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left h3 {
+    color: white;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.totalEmployees {
+    color: #2DD4BF;
+}
+
+.activeEmployees {
+    color: #10B981;
+}
+
+.inactiveEmployees {
+    color: #EF4444;
+}
+
+.header-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.status-filters {
+    display: flex;
+    align-items: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.status-filters input[type="radio"] {
+    display: none;
+    /* Hide the radio buttons */
+}
+
+.status-filters label {
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    /* Glassmorphism effect */
+    backdrop-filter: blur(5px);
+    /* Adding blur effect */
+    color: white;
+    user-select: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-filters input[type="radio"]:checked+label {
+    background-color: rgba(45, 212, 190, 0.7);
+    /* Teal background on checked */
+    backdrop-filter: none;
+    /* Remove blur when checked */
+    border-color: rgba(45, 212, 190, 0.7);
+    /* Matching border color when checked */
+    color: white;
+    /* Text color on checked */
+}
+
+.status-filters label:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+#searchBox {
+    height: 50px;
+    border: none;
+    border-bottom: 3px solid rgba(20, 184, 165, 0.5);
+    padding: 0px 10px;
+    color: white;
+    background-color: transparent;
+    outline: none;
+}
+
+.vendor-input-box:focus {
+    border-bottom: 2px solid #14b8a6;
+}
+.employee-card-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between items */
+    padding: 10px;
+    justify-items: stretch;
+    padding: 20px 40px;
+}

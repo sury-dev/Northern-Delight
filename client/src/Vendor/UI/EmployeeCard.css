@@ -1,0 +1,126 @@
+.employee-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #1E1E1E;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+.employee-profile-picture-section{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+    width: 100%;
+    padding: 20px 10px;
+    padding-top: 10px;
+}
+.employee-image-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 4rem; /* Limits size to prevent overflow */
+    height: 4rem;
+    min-height: 4rem;
+    border-radius: 50%;
+    border: 2px solid #2DD4BF;
+    overflow: hidden;
+}
+.employee-info{
+    flex-grow: 1; /* Takes remaining space */
+    max-width: 70%; /* Ensures it doesn't exceed 70% of parent */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+}
+.employee-info p{
+    color: #EF4444;
+    font-size: 1rem;
+    margin: 0;
+}
+.employee-info p.active{
+    color: #10B981;
+    font-size: 1rem;
+    margin: 0;
+}
+.employee-info h3 {
+    color: white;
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    margin: 0;
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    display: block;
+}
+.employee-info h4 {
+    color: white;
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    margin: 0;
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    display: block;
+}
+.employee-details-item{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 10px;
+}
+.employee-details{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 30px 0px;
+}
+.employee-details-item > img{
+    height: 1.5rem;
+}
+.employee-details-item > p{
+    font-size: 1rem;
+}
+.employee-ctc-btns{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.employee-ctc-btn{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 2px solid #EF4444;
+    flex: 1;
+}
+.employee-ctc-btn:hover{
+    background-color: #EF4444;
+    color: white;
+}
+.employee-ctc-btn:active{
+    background-color: #EF4444;
+    color: white;
+}
+.employee-ctc-btn.safe{
+    border: 2px solid #10B981;
+}
+.employee-ctc-btn.safe:hover{
+    background-color: #10B981;
+    color: white;
+}
+.employee-ctc-btn.safe:active{
+    background-color: #10B981;
+    color: white;
+}

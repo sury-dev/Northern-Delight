@@ -29,21 +29,22 @@ export const toggleEmployeeActivation = asyncHandler(async (req, res) => {
     }
 
     employee.active = !employee.active;
+    const updatedEmployeeStatus = employee.active ? "Activated" : "Deactivated";
     await employee.save();
 
     try {
         addLog({
             userType,
-            userId : owner._id,
+            userId : req.owner._id,
             details : {
                 employeeId : employee._id,
                 employeeName : employee.name
             },
-            action : "Activated employee",
+            action : `Employee ${updatedEmployeeStatus}`,
             ipAddress : req.ip
         });
     } catch (error) {
-        console.log("Error while adding log entry for owner login : ", error);
+        console.log("Error while adding log entry for employee activation toggle : ", error);
     }
 
     return res
@@ -57,3 +58,97 @@ export const toggleEmployeeActivation = asyncHandler(async (req, res) => {
     );
 });
 
+export const fetchAllEmployees = asyncHandler(async (req, res) => {
+    try {
+
+        //get search option from query
+        let search = req.query.search;
+        if(!search) {
+            search = "";
+        }
+
+        if(req.role !== userType) {
+            throw new ApiError(403, "Unauthorized access");
+        }
+        const employees = await Employee.find({
+            $or : [
+                { name : { $regex : search, $options : "i" } },
+                { username : { $regex : search, $options : "i" } },
+                { email : { $regex : search, $options : "i" } },
+                { phoneNumber : { $regex : search, $options : "i" } },
+                { vid : { $regex : search, $options : "i" } },
+                {jobTitle : { $regex : search, $options : "i" } }
+            ]
+        })
+        .sort({ createdAt : -1 });
+
+        if(!employees) {
+            throw new ApiError(404, "No employees found");
+        }
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, employees, "Employees fetched successfully")
+        );
+
+    } catch (error) {
+        throw new ApiError(500, "ownerDashboard.controller :: Error while fetching employees :: " + error.message);
+    }
+})
+
+export const deleteEmployee = asyncHandler(async (req, res) => {
+    try {
+        if(req.role !== userType) {
+            throw new ApiError(403, "Unauthorized access");
+        }
+    
+        const { id } = req.params;
+    
+        if(!id || !mongoose.isValidObjectId(id)) {
+            throw new ApiError(400, "Invalid employee id");
+        }
+
+        
+        const employee = await Employee.findByIdAndDelete(id);
+        
+        //delete employee avatar from cloudinary
+
+        try {
+            await deleteFromCloudinary(employee.avatar.public_id, employee.avatar.resource_type);
+        } catch (error) {
+            console.log("Error while deleting employee avatar from cloudinary : ", error);
+        }
+
+        if(!employee) {
+            throw new ApiError(404, "Employee not found");
+        }
+
+
+        try {
+            addLog({
+                userType,
+                userId : req.owner._id,
+                details : {
+                    employeeName : employee.name,
+                    vid : employee.vid
+                },
+                action : "Employee Deleted",
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for employee deletion : ", error);
+        }
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, {
+                employeeId : employee._id,
+                employeeName : employee.name
+            }, "Employee deleted successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, "ownerDashboard.controller :: Error while deleting employee :: " + error.message);
+    }
+});

@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function VendorRouteProtector({ children, authentication = true }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [loading, setLoading] = useState(true);
 
-    const navigate = useNavigate()
-    const [loader, setLoader] = useState(true)
-    const authStatus = useSelector(state => state.auth.status)
+    const authStatus = useSelector(state => state.auth.status);
+    const role = useSelector(state => state.auth.role);
 
     useEffect(() => {
-        console.log(authentication, authStatus)
-        if (authentication && authStatus !== authentication) {
-            navigate("vendor/auth/login")
-        } else if (!authentication && authStatus !== authentication) {
-            navigate("/vendor")
+        if (authStatus === null) return; // Prevents redirecting before we have auth data
+        
+        if (authentication && !authStatus) {
+            if (location.pathname !== "/vendor/auth/login") {
+                navigate("/vendor/auth/login", { replace: true });
+            }
+        } else if (!authentication && authStatus) {
+            if (location.pathname !== "/vendor") {
+                navigate("/vendor", { replace: true });
+            }
         }
-        setLoader(false)
-    }, [authStatus, navigate, authentication])
+        
+        setLoading(false);
+    }, [authStatus, authentication, navigate, location]);
 
-    return loader ? <h1 style={{height: '1vh'}} className='text-red-700'>Loading...</h1> : <>{children}</>
+    return loading ? <h1 className="text-red-700">Loading...</h1> : <>{children}</>;
 }
 
-export default VendorRouteProtector
+export default VendorRouteProtector;
