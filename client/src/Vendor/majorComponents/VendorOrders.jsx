@@ -15,10 +15,6 @@ function VendorOrders() {
     }
   }, [vendorRole, navigate]);
 
-  if (!isAuthorized) {
-    return null; // Prevents rendering if unauthorized
-  }
-
   return (
     <div>
       Orders
