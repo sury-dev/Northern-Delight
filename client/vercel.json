@@ -8,7 +8,7 @@
   "routes": [
     {
       "src": "/api/(.*)", 
-      "dest": "https://your-backend-url.com/api/$1"
+      "dest": "https://northern-delight-backend.vercel.app/api/$1"
     }
   ]
 }
