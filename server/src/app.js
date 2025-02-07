@@ -12,9 +12,23 @@ app.use(express.static("public"));
 
 app.use(cookieParser());
 
+const allowedOrigins = [
+    'http://localhost1:5173',
+    'https://northern-delight.vercel.app'
+];
+
 app.use(cors({
-    origin : process.env.CORS_ORIGIN,
-}))
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allowed headers
+    credentials: true // Allow cookies and authentication headers
+}));
 
 //routes
 
