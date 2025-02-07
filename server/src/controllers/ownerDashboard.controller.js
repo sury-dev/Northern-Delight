@@ -12,50 +12,56 @@ const userType = "owner";
 
 export const toggleEmployeeActivation = asyncHandler(async (req, res) => {
 
-    if(req.role !== userType) {
-        throw new ApiError(403, "Unauthorized access");
-    }
-
-    const { id } = req.params;
-
-    if(!id || !mongoose.isValidObjectId(id)) {
-        throw new ApiError(400, "Invalid employee id");
-    }
-
-    const employee = await Employee.findById(id);
-
-    if(!employee) {
-        throw new ApiError(404, "Employee not found");
-    }
-
-    employee.active = !employee.active;
-    const updatedEmployeeStatus = employee.active ? "Activated" : "Deactivated";
-    await employee.save();
-
     try {
-        addLog({
-            userType,
-            userId : req.owner._id,
-            details : {
+        if(req.role !== userType) {
+            throw new ApiError(403, "Unauthorized access");
+        }
+    
+        const { id } = req.params;
+    
+        if(!id || !mongoose.isValidObjectId(id)) {
+            throw new ApiError(400, "Invalid employee id");
+        }
+    
+        const employee = await Employee.findById(id);
+    
+        if(!employee) {
+            throw new ApiError(404, "Employee not found");
+        }
+    
+        employee.active = !employee.active;
+        const updatedEmployeeStatus = employee.active ? "Activated" : "Deactivated";
+        await employee.save();
+    
+        try {
+            addLog({
+                userType,
+                userId : req.owner._id,
+                details : {
+                    employeeId : employee._id,
+                    employeeName : employee.name
+                },
+                action : `Employee ${updatedEmployeeStatus}`,
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for employee activation toggle : ", error);
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, {
                 employeeId : employee._id,
-                employeeName : employee.name
-            },
-            action : `Employee ${updatedEmployeeStatus}`,
-            ipAddress : req.ip
-        });
+                employeeName : employee.name,
+                active : employee.active
+            }, "Employee activation status updated successfully")
+        );
     } catch (error) {
-        console.log("Error while adding log entry for employee activation toggle : ", error);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while toggling employee activation status")
+        )
     }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, {
-            employeeId : employee._id,
-            employeeName : employee.name,
-            active : employee.active
-        }, "Employee activation status updated successfully")
-    );
 });
 
 export const fetchAllEmployees = asyncHandler(async (req, res) => {
@@ -93,7 +99,9 @@ export const fetchAllEmployees = asyncHandler(async (req, res) => {
         );
 
     } catch (error) {
-        throw new ApiError(500, "ownerDashboard.controller :: Error while fetching employees :: " + error.message);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching employees")
+        )
     }
 })
 
@@ -149,6 +157,8 @@ export const deleteEmployee = asyncHandler(async (req, res) => {
             }, "Employee deleted successfully")
         );
     } catch (error) {
-        throw new ApiError(500, "ownerDashboard.controller :: Error while deleting employee :: " + error.message);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while deleting employee")
+        )
     }
 });

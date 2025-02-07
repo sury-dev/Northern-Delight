@@ -21,7 +21,9 @@ const generateAccessAndRefreshToken = async (ownerId) => {
 
         return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating access and refresh token : ", error);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while generating tokens")
+        )
     }
 }
 
@@ -109,105 +111,121 @@ const registerOwner = asyncHandler(async (req, res) => {
         if(avatarLocalPath){
             fs.unlinkSync(avatarLocalPath); // Delete the file from the server if an error occurs
         }
-        throw new ApiError(500, error?.message || "Something went wrong while registering the owner");
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while registering the owner")
+        )
     }
 
 })
 
 const loginOwner = asyncHandler(async (req,res) => {
 
-    const {usernameOrEmail, password} = req.body;
-
-    if(!usernameOrEmail || !password){
-        throw new ApiError(400, "Username Or Email along with corresponding password is required");
-    }
-
-    const owner = await Owner.findOne({ $or : [{username : usernameOrEmail}, {email : usernameOrEmail.toLowerCase()} ]});
-
-    if(!owner){
-        throw new ApiError(404, "Owner does not exist");
-    }
-
-    const isPasswordValid = await owner.isPasswordCorrect(password);
-
-    if(!isPasswordValid){
-        throw new ApiError(401, "Invalid Owner Credentials");
-    }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(owner._id);
-
-    const loggedInOwner = await Owner.findById(owner._id).select("-password -refreshToken");
-
-    const options = {
-        httpOnly : true,
-        secure : true
-    }
-
     try {
-        addLog({
-            userType,
-            userId : owner._id,
-            action : "Owner Logged In",
-            ipAddress : req.ip
-        });
-    } catch (error) {
-        console.log("Error while adding log entry for owner login : ", error);
-    }
-
-    return res.
-    status(200).
-    cookie("accessToken", accessToken, options).
-    cookie("refreshToken", refreshToken, options).
-    json(
-        new ApiResponse(
-            200,
-            {
-                owner: loggedInOwner, accessToken, refreshToken
-            },
-            "Owner Logged in successfully"
+        const {usernameOrEmail, password} = req.body;
+    
+        if(!usernameOrEmail || !password){
+            throw new ApiError(400, "Username Or Email along with corresponding password is required");
+        }
+    
+        const owner = await Owner.findOne({ $or : [{username : usernameOrEmail}, {email : usernameOrEmail.toLowerCase()} ]});
+    
+        if(!owner){
+            throw new ApiError(404, "Owner does not exist");
+        }
+    
+        const isPasswordValid = await owner.isPasswordCorrect(password);
+    
+        if(!isPasswordValid){
+            throw new ApiError(401, "Invalid Owner Credentials");
+        }
+    
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(owner._id);
+    
+        const loggedInOwner = await Owner.findById(owner._id).select("-password -refreshToken");
+    
+        const options = {
+            httpOnly : true,
+            secure : true
+        }
+    
+        try {
+            addLog({
+                userType,
+                userId : owner._id,
+                action : "Owner Logged In",
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for owner login : ", error);
+        }
+    
+        return res.
+        status(200).
+        cookie("accessToken", accessToken, options).
+        cookie("refreshToken", refreshToken, options).
+        json(
+            new ApiResponse(
+                200,
+                {
+                    owner: loggedInOwner, accessToken, refreshToken
+                },
+                "Owner Logged in successfully"
+            )
         )
-    )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while logging in the owner")
+        )
+        
+    }
 })
 
 const logoutOwner = asyncHandler(async (req, res) => {
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
-    }
-    await Owner.findByIdAndUpdate(
-        req.owner._id,
-        {
-            $unset : {
-                refreshToken : 1
-            },
-        },
-        {
-            new : true //this will make sure that it returns updated value
-        }
-    );
-
-    const options = {
-        httpOnly : true,
-        secure : true
-    }
-
     try {
-        addLog({
-            userType,
-            userId : req.owner._id,
-            action : "Owner Logged Out",
-            ipAddress : req.ip
-        });
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+        await Owner.findByIdAndUpdate(
+            req.owner._id,
+            {
+                $unset : {
+                    refreshToken : 1
+                },
+            },
+            {
+                new : true //this will make sure that it returns updated value
+            }
+        );
+    
+        const options = {
+            httpOnly : true,
+            secure : true
+        }
+    
+        try {
+            addLog({
+                userType,
+                userId : req.owner._id,
+                action : "Owner Logged Out",
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for owner logout : ", error);
+        }
+    
+        return res.
+        status(200).
+        clearCookie("accessToken", options).
+        clearCookie("refreshToken", options).
+        json(
+            new ApiResponse(200, {}, "Owner Logged Out successfully")
+        )
     } catch (error) {
-        console.log("Error while adding log entry for owner logout : ", error);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while logging out the owner")
+        )
+        
     }
-
-    return res.
-    status(200).
-    clearCookie("accessToken", options).
-    clearCookie("refreshToken", options).
-    json(
-        new ApiResponse(200, {}, "Owner Logged Out successfully")
-    )
 })
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -267,158 +285,194 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             )
         )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Refresh Token")
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while refreshing the access token")
+        )
     }
 })
 
 const changeCurrentOwnerPassword = asyncHandler(async (req, res) => {
 
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const { oldPassword, newPassword } = req.body;
-
-    const owner = await Owner.findById(req.owner?._id);
-
-    const isPasswordCorrect = owner.isPasswordCorrect(oldPassword);
-
-    if(!isPasswordCorrect){
-        throw new ApiError(401, "Invalid Old Password");
-    }
-
-    owner.password = newPassword;
-
-    await owner.save({validateBeforeSave : false});
-
     try {
-        addLog({
-            userType,
-            userId : owner._id,
-            action : "Password Changed",
-            ipAddress : req.ip
-        });
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const { oldPassword, newPassword } = req.body;
+    
+        const owner = await Owner.findById(req.owner?._id);
+    
+        const isPasswordCorrect = owner.isPasswordCorrect(oldPassword);
+    
+        if(!isPasswordCorrect){
+            throw new ApiError(401, "Invalid Old Password");
+        }
+    
+        owner.password = newPassword;
+    
+        await owner.save({validateBeforeSave : false});
+    
+        try {
+            addLog({
+                userType,
+                userId : owner._id,
+                action : "Password Changed",
+                ipAddress : req.ip
+            });
+        }
+        catch (error) {
+            console.log("Error while adding log entry for password change : ", error);
+        }
+    
+        return res.
+        status(200).
+        json(
+            new ApiResponse(200, {}, "Password Changed Successfully")
+        )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while changing the password")
+        )
+        
     }
-    catch (error) {
-        console.log("Error while adding log entry for password change : ", error);
-    }
-
-    return res.
-    status(200).
-    json(
-        new ApiResponse(200, {}, "Password Changed Successfully")
-    )
 })
 
 const getCurrentOwner = asyncHandler(async (req, res) => {
 
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
+    try {
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, req.owner , "Current Owner Fetched successfully")
+        );
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching the current owner")
+        )
+        
     }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, req.owner , "Current Owner Fetched successfully")
-    );
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
 
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const {name, phoneNumber} = req.body;
-
-    if(!name && !phoneNumber){
-        throw new ApiError(400, "All fields are required");
-    }
-
-    const owner = await Owner.findByIdAndUpdate(
-        req.owner?._id,
-        {
-            $set : {
-                name : name?.trim() || req.owner.name,
-                phoneNumber : phoneNumber?.trim() || req.owner.phoneNumber,
-            }
-        },
-        {
-            new : true
-        }
-    ).select("-password -refreshToken");
-
     try {
-        addLog({
-            userType,
-            userId : owner._id,
-            action : "Account Details Updated",
-            details : {
-                owner
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const {name, phoneNumber} = req.body;
+    
+        if(!name && !phoneNumber){
+            throw new ApiError(400, "All fields are required");
+        }
+    
+        const owner = await Owner.findByIdAndUpdate(
+            req.owner?._id,
+            {
+                $set : {
+                    name : name?.trim() || req.owner.name,
+                    phoneNumber : phoneNumber?.trim() || req.owner.phoneNumber,
+                }
             },
-            ipAddress : req.ip
-        });
+            {
+                new : true
+            }
+        ).select("-password -refreshToken");
+    
+        try {
+            addLog({
+                userType,
+                userId : owner._id,
+                action : "Account Details Updated",
+                details : {
+                    owner
+                },
+                ipAddress : req.ip
+            });
+        }
+        catch (error) {
+            console.log("Error while adding log entry for account details update : ", error);
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, owner, "Name and Phone Number updated successfully")
+        )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while updating the account details")
+        )
     }
-    catch (error) {
-        console.log("Error while adding log entry for account details update : ", error);
-    }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, owner, "Name and Phone Number updated successfully")
-    )
 })
 
 const getOwnerProfile = asyncHandler(async (req, res) => {
 
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
+    try {
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const ownerId = req.owner._id;
+        const owner = await Owner.findById(ownerId).select("-password -refreshToken");
+    
+        if(!owner){
+            throw new ApiError(404, "Owner not found");
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, owner, "Owner Profile fetched successfully")
+        )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching the owner profile")
+        )
+        
     }
-
-    const ownerId = req.owner._id;
-    const owner = await Owner.findById(ownerId).select("-password -refreshToken");
-
-    if(!owner){
-        throw new ApiError(404, "Owner not found");
-    }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, owner, "Owner Profile fetched successfully")
-    )
 })
 
 const deleteOwner = asyncHandler(async (req, res) => {
 
-    if(req?.role !== "owner"){
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const ownerId = req.owner._id;
-
-    await deleteFromCloudinary(req.owner.avatar.public_id, req.owner.avatar.resource_type);
-
-    await Owner.findByIdAndDelete(ownerId);
-
     try {
-        addLog({
-            userType,
-            userId : ownerId,
-            action : "Owner Deleted",
-            ipAddress : req.ip
-        });
+        if(req?.role !== "owner"){
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const ownerId = req.owner._id;
+    
+        await deleteFromCloudinary(req.owner.avatar.public_id, req.owner.avatar.resource_type);
+    
+        await Owner.findByIdAndDelete(ownerId);
+    
+        try {
+            addLog({
+                userType,
+                userId : ownerId,
+                action : "Owner Deleted",
+                ipAddress : req.ip
+            });
+        }
+        catch (error) {
+            console.log("Error while adding log entry for owner deletion : ", error);
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, {}, "Owner deleted successfully")
+        )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while deleting the owner")
+        )
+        
     }
-    catch (error) {
-        console.log("Error while adding log entry for owner deletion : ", error);
-    }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, {}, "Owner deleted successfully")
-    )
 });
 
 

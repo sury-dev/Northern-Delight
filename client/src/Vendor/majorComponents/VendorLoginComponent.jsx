@@ -34,10 +34,7 @@ function VendorLoginComponent() {
             }
         }
         else {
-            // const regex = /Error:\s*(.*?)(<br>|<\/pre>)/;
-            // const match = vendorData.data.match(regex);
-            // setError(match[1]);
-            setError(vendorData.data.message);
+            setError(userData?.data?.message || "Something went wrong");
         }
     };
 

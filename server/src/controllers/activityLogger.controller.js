@@ -35,13 +35,13 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
         // Add search functionality (applied separately from filters)
         const searchFilters = search
             ? {
-                  $or: [
-                      { 'userDetails.username': { $regex: search, $options: "i" } },
-                      { 'userDetails.name': { $regex: search, $options: "i" } },
-                      { 'userDetails.email': { $regex: search, $options: "i" } },
-                      { 'userDetails.vid': { $regex: search, $options: "i" } },
-                  ],
-              }
+                $or: [
+                    { 'userDetails.username': { $regex: search, $options: "i" } },
+                    { 'userDetails.name': { $regex: search, $options: "i" } },
+                    { 'userDetails.email': { $regex: search, $options: "i" } },
+                    { 'userDetails.vid': { $regex: search, $options: "i" } },
+                ],
+            }
             : {};
 
         // Fetch activity logs from the database using aggregation pipelines
@@ -108,6 +108,8 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
             },
         });
     } catch (error) {
-        throw new ApiError(400, "Error in getting the activity Logs: " + error.message);
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching activity logs")
+        )
     }
 });

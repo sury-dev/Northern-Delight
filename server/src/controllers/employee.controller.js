@@ -472,7 +472,6 @@ const deleteEmployee = asyncHandler(async (req, res) => {
         return res.status(error?.statusCode || 500).json(
             new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while deleting the employee")
         )
-        
     }
 });
 

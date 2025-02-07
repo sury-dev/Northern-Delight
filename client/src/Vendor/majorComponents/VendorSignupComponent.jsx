@@ -103,9 +103,7 @@ function VendorSignupComponent() {
             navigate("/vendor/auth/login");
         }
         else {
-            const regex = /Error:\s*(.*?)(<br>|<\/pre>)/;
-            const match = userData.data.match(regex);
-            setServerError(match ? match[1] : "Something went wrong");
+            setServerError(userData?.data?.message || "Something went wrong");
         }
     };
 
