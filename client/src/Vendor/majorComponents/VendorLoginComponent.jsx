@@ -34,7 +34,7 @@ function VendorLoginComponent() {
             }
         }
         else {
-            setError(userData?.data?.message || "Something went wrong");
+            setError(vendorData?.data?.message || "Something went wrong");
         }
     };
 
