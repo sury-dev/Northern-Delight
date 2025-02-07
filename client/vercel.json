@@ -1,14 +1,12 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*", 
+      "destination": "https://your-backend-url.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)", 
-      "dest": "https://northern-delight-backend.vercel.app/api/$1"
     }
   ]
 }
