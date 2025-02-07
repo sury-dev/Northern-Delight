@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import fs from "fs";
 import jwt from "jsonwebtoken";
 import ActivityLogger, { addLog } from "../utils/activityLogger.js";
+import { count } from "console";
 
 const userType = "employee";
 
@@ -107,111 +108,125 @@ const registerEmployee = asyncHandler(async (req, res) => {
         if(avatarLocalPath){
             fs.unlinkSync(avatarLocalPath); // Delete the file from the server if an error occurs
         }
-        throw new ApiError(500, error?.message || "Something went wrong while registering the employee");
+        res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while registering the employee")
+        );
     }
 
 })
 
 const loginEmployee = asyncHandler(async (req, res) => {
 
-    const { usernameOrEmail, password } = req.body;
-
-    if (!usernameOrEmail || !password) {
-        throw new ApiError(400, "Username Or Email along with corresponding password is required");
-    }
-
-    const employee = await Employee.findOne({ $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }] });
-
-    if (!employee) {
-        throw new ApiError(404, "Employee does not exist");
-    }
-
-    if (!employee.active) {
-        throw new ApiError(401, "Employee is not activated yet");
-    }
-
-    const isPasswordValid = await employee.isPasswordCorrect(password);
-
-    if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid Employee Credentials");
-    }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(employee._id);
-
-    const loggedInEmployee = await Employee.findById(employee._id).select("-password -refreshToken");
-
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
     try {
-        addLog({
-            userType,
-            userId : loggedInEmployee._id,
-            action : "Employee Logged In",
-            ipAddress : req.ip
-        });
-    } catch (error) {
-        console.log("Error while adding log entry for employee login : ", error);
-    }
-
-    return res.
-        status(200).
-        cookie("accessToken", accessToken, options).
-        cookie("refreshToken", refreshToken, options).
-        json(
-            new ApiResponse(
-                200,
-                {
-                    employee: loggedInEmployee, accessToken, refreshToken
-                },
-                "Employee Logged in successfully"
+        const { usernameOrEmail, password } = req.body;
+    
+        if (!usernameOrEmail || !password) {
+            throw new ApiError(400, "Username Or Email along with corresponding password is required");
+        }
+    
+        const employee = await Employee.findOne({ $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }] });
+    
+        if (!employee) {
+            throw new ApiError(404, "Employee does not exist");
+        }
+    
+        if (!employee.active) {
+            throw new ApiError(401, "Employee is not activated yet");
+        }
+    
+        const isPasswordValid = await employee.isPasswordCorrect(password);
+    
+        if (!isPasswordValid) {
+            throw new ApiError(401, "Invalid Employee Credentials");
+        }
+    
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(employee._id);
+    
+        const loggedInEmployee = await Employee.findById(employee._id).select("-password -refreshToken");
+    
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        try {
+            addLog({
+                userType,
+                userId : loggedInEmployee._id,
+                action : "Employee Logged In",
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for employee login : ", error);
+        }
+    
+        return res.
+            status(200).
+            cookie("accessToken", accessToken, options).
+            cookie("refreshToken", refreshToken, options).
+            json(
+                new ApiResponse(
+                    200,
+                    {
+                        employee: loggedInEmployee, accessToken, refreshToken
+                    },
+                    "Employee Logged in successfully"
+                )
             )
-        )
+    } catch (error) {
+        res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while logging in the employee")
+        );
+    }
 })
 
 const logoutEmployee = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    await Employee.findByIdAndUpdate(
-        req.employee._id,
-        {
-            $unset: {
-                refreshToken: 1
-            },
-        },
-        {
-            new: true //this will make sure that it returns updated value
-        }
-    );
-
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
     try {
-        addLog({
-            userType,
-            userId : req.employee._id,
-            action : "Employee Logged Out",
-            ipAddress : req.ip
-        });
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        await Employee.findByIdAndUpdate(
+            req.employee._id,
+            {
+                $unset: {
+                    refreshToken: 1
+                },
+            },
+            {
+                new: true //this will make sure that it returns updated value
+            }
+        );
+    
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        try {
+            addLog({
+                userType,
+                userId : req.employee._id,
+                action : "Employee Logged Out",
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for employee logout : ", error);
+        }
+    
+        return res.
+            status(200).
+            clearCookie("accessToken", options).
+            clearCookie("refreshToken", options).
+            json(
+                new ApiResponse(200, {}, "Employee Logged Out successfully")
+            )
     } catch (error) {
-        console.log("Error while adding log entry for employee logout : ", error);
-    }
-
-    return res.
-        status(200).
-        clearCookie("accessToken", options).
-        clearCookie("refreshToken", options).
-        json(
-            new ApiResponse(200, {}, "Employee Logged Out successfully")
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while logging out the employee")
         )
+    }
 })
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -271,160 +286,194 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 )
             )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Refresh Token")
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while refreshing the access token")
+        )
     }
 })
 
 const changeCurrentEmployeePassword = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const { oldPassword, newPassword } = req.body;
-
-    const employee = await Employee.findById(req.employee?._id);
-
-    const isPasswordCorrect = employee.isPasswordCorrect(oldPassword);
-
-    if (!isPasswordCorrect) {
-        throw new ApiError(401, "Invalid Old Password");
-    }
-
-    employee.password = newPassword;
-
-    await employee.save({ validateBeforeSave: false });
-
     try {
-        addLog({
-            userType,
-            userId : employee._id,
-            action : "Employee Password Changed",
-            ipAddress : req.ip
-        });
-    }
-    catch (error) {
-        console.log("Error while adding log entry for employee password change : ", error);
-    }
-
-    return res.
-        status(200).
-        json(
-            new ApiResponse(200, {}, "Password Changed Successfully")
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const { oldPassword, newPassword } = req.body;
+    
+        const employee = await Employee.findById(req.employee?._id);
+    
+        const isPasswordCorrect = employee.isPasswordCorrect(oldPassword);
+    
+        if (!isPasswordCorrect) {
+            throw new ApiError(401, "Invalid Old Password");
+        }
+    
+        employee.password = newPassword;
+    
+        await employee.save({ validateBeforeSave: false });
+    
+        try {
+            addLog({
+                userType,
+                userId : employee._id,
+                action : "Employee Password Changed",
+                ipAddress : req.ip
+            });
+        }
+        catch (error) {
+            console.log("Error while adding log entry for employee password change : ", error);
+        }
+    
+        return res.
+            status(200).
+            json(
+                new ApiResponse(200, {}, "Password Changed Successfully")
+            )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while changing the password")
         )
+    }
 })
 
 const getCurrentEmployee = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
+    try {
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, req.employee, "Current Employee Fetched successfully")
+            );
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching the current employee")
+        )
     }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, req.employee, "Current Employee Fetched successfully")
-        );
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const { name, phoneNumber } = req.body;
-
-    if (!name && !phoneNumber) {
-        throw new ApiError(400, "All fields are required");
-    }
-
-    const employee = await Employee.findByIdAndUpdate(
-        req.employee?._id,
-        {
-            $set: {
-                name: name?.trim() || req.employee.name,
-                phoneNumber: phoneNumber?.trim() || req.employee.phoneNumber,
-            }
-        },
-        {
-            new: true
-        }
-    ).select("-password -refreshToken");
-
     try {
-        addLog({
-            userType,
-            userId : employee._id,
-            action : "Employee Account Details Updated",
-            details : {
-                updatedFields : {
-                    name : employee.name,
-                    phoneNumber : employee.phoneNumber
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const { name, phoneNumber } = req.body;
+    
+        if (!name && !phoneNumber) {
+            throw new ApiError(400, "All fields are required");
+        }
+    
+        const employee = await Employee.findByIdAndUpdate(
+            req.employee?._id,
+            {
+                $set: {
+                    name: name?.trim() || req.employee.name,
+                    phoneNumber: phoneNumber?.trim() || req.employee.phoneNumber,
                 }
             },
-            ipAddress : req.ip
-        });
+            {
+                new: true
+            }
+        ).select("-password -refreshToken");
+    
+        try {
+            addLog({
+                userType,
+                userId : employee._id,
+                action : "Employee Account Details Updated",
+                details : {
+                    updatedFields : {
+                        name : employee.name,
+                        phoneNumber : employee.phoneNumber
+                    }
+                },
+                ipAddress : req.ip
+            });
+        } catch (error) {
+            console.log("Error while adding log entry for employee account details update : ", error);
+        }
+    
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, employee, "Name and Phone Number updated successfully")
+            )
     } catch (error) {
-        console.log("Error while adding log entry for employee account details update : ", error);
-    }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, employee, "Name and Phone Number updated successfully")
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while updating the account details")
         )
+    }
 })
 
 const getEmployeeProfile = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const employeeId = req.employee._id;
-    const employee = await Employee.findById(employeeId).select("-password -refreshToken");
-
-    if (!employee) {
-        throw new ApiError(404, "Employee not found");
-    }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, employee, "Employee Profile fetched successfully")
+    try {
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const employeeId = req.employee._id;
+        const employee = await Employee.findById(employeeId).select("-password -refreshToken");
+    
+        if (!employee) {
+            throw new ApiError(404, "Employee not found");
+        }
+    
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, employee, "Employee Profile fetched successfully")
+            )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while fetching the employee profile")
         )
+        
+    }
 })
 
 const deleteEmployee = asyncHandler(async (req, res) => {
 
-    if (req?.role !== "employee") {
-        throw new ApiError(401, "Unauthorized Request");
-    }
-
-    const employeeId = req.employee._id;
-
-    await deleteFromCloudinary(req.employee.avatar.public_id, req.employee.avatar.resource_type);
-
-    await Employee.findByIdAndDelete(employeeId);
-
     try {
-        addLog({
-            userType,
-            userId : employeeId,
-            action : "Employee Deleted",
-            ipAddress : req.ip
-        });
-    }
-    catch (error) {
-        console.log("Error while adding log entry for employee deletion : ", error);
-    }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, {}, "Employee deleted successfully")
+        if (req?.role !== "employee") {
+            throw new ApiError(401, "Unauthorized Request");
+        }
+    
+        const employeeId = req.employee._id;
+    
+        await deleteFromCloudinary(req.employee.avatar.public_id, req.employee.avatar.resource_type);
+    
+        await Employee.findByIdAndDelete(employeeId);
+    
+        try {
+            addLog({
+                userType,
+                userId : employeeId,
+                action : "Employee Deleted",
+                ipAddress : req.ip
+            });
+        }
+        catch (error) {
+            console.log("Error while adding log entry for employee deletion : ", error);
+        }
+    
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, {}, "Employee deleted successfully")
+            )
+    } catch (error) {
+        return res.status(error?.statusCode || 500).json(
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while deleting the employee")
         )
+        
+    }
 });
 
 export {
