@@ -8,7 +8,7 @@ import App from './App.jsx'
 import Vendor from './Vendor.jsx'
 import { VendorAuth, VendorDashboard } from './Vendor/pages/index.js'
 import VendorRouteProtector from './Vendor/auth/VendorRouteProtector.jsx'
-import { VendorLoginComponent, VendorSignupComponent, EmployeesComponent, VendorMenuComponent } from './Vendor/majorComponents/index.js'
+import { VendorLoginComponent, VendorSignupComponent, EmployeesComponent, VendorMenuComponent, VendorCoupons, VendorCustomers, AdminDashboard, VendorOrders } from './Vendor/majorComponents/index.js'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,14 @@ const router = createBrowserRouter([
         ),
         children: [
           {
+            path: '',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <AdminDashboard />
+              </VendorRouteProtector>
+            ),
+          },
+          {
             path: 'employees',
             element: (
               <VendorRouteProtector authentication={true}>
@@ -40,6 +48,30 @@ const router = createBrowserRouter([
             element: (
               <VendorRouteProtector authentication={true}>
                 <VendorMenuComponent />
+              </VendorRouteProtector>
+            ),
+          },
+          {
+            path: 'Orders',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <VendorOrders />
+              </VendorRouteProtector>
+            ),
+          },
+          {
+            path: 'coupons',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <VendorCoupons />
+              </VendorRouteProtector>
+            ),
+          },
+          {
+            path: 'customers',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <VendorCustomers />
               </VendorRouteProtector>
             ),
           }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import vendorService from "../../server/vendorService";
 import { EmployeeCard } from "../UI";
 import "./EmployeesComponent.css";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function EmployeesComponent() {
     const [employees, setEmployees] = useState([]);
@@ -10,6 +12,18 @@ function EmployeesComponent() {
     const [statusFilter, setStatusFilter] = useState("All"); // To store selected status filter (All/Active/Inactive)
     const [fetchingError, setFetchingError] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const vendorRole = useSelector(state => state.auth.role);
+    const navigate = useNavigate();
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
+    useEffect(() => {
+        if (vendorRole !== "admin") {
+            navigate('/vendor/Orders');
+        } else {
+            setIsAuthorized(true);
+        }
+    }, [vendorRole, navigate]);
 
     useEffect(() => {
         vendorService
@@ -95,6 +109,10 @@ function EmployeesComponent() {
         handleSearch({ target: { value: searchTerm } }); // Apply filter immediately after changing the status filter
     }, [statusFilter]);
 
+    if (!isAuthorized) {
+        return null; // Prevents rendering if unauthorized
+    }
+
     return (
         <div className="employeesComponent w-full h-full relative">
             <div className="header">
@@ -155,11 +173,11 @@ function EmployeesComponent() {
             {fetchingError && <p>Error fetching employees. Please try again.</p>}
 
             {/* Optional: Display employee list if needed */}
-                <div className="employee-card-container">
-                    {filteredEmployees.map(emp => (
-                        <EmployeeCard key={emp._id} {...emp} toggleEmployeeActivation = {toggleEmployeeActivation} deleteEmployee = {deleteEmployee} />
-                    ))}
-                </div>
+            <div className="employee-card-container">
+                {filteredEmployees.map(emp => (
+                    <EmployeeCard key={emp._id} {...emp} toggleEmployeeActivation={toggleEmployeeActivation} deleteEmployee={deleteEmployee} />
+                ))}
+            </div>
         </div>
     );
 }

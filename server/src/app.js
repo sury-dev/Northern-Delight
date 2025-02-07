@@ -13,7 +13,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 const allowedOrigins = [
-    'http://localhost1:5173',
+    'http://localhost:5173',
     'https://northern-delight.vercel.app'
 ];
 

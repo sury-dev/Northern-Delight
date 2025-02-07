@@ -19,7 +19,7 @@ export class VendorService {
                     }
                 });
             }
-            else{
+            else {
                 userData = await axios.post("/api/employee/register", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
@@ -42,7 +42,7 @@ export class VendorService {
             if (login === "admin") {
                 userData = await axios.post("/api/owner/login", { usernameOrEmail, password });
             }
-            else{
+            else {
                 userData = await axios.post("/api/employee/login", { usernameOrEmail, password });
             }
 
@@ -53,37 +53,41 @@ export class VendorService {
             return error.response;
         }
     }
-    async getCurrentOwner(){
+    async getCurrentOwner(called = false) {
         try {
             const owner = await axios.get("/api/owner/current-owner");
             return owner;
         }
         catch (error) {
-            console.log("Server :: VendorService :: getCurrentOwner :: error :: ", error);
+            if (!called) {
+                console.log("Server :: VendorService :: getCurrentOwner :: error :: ", error);
+            }
             return error.response;
         }
     }
-    async getCurrentEmployee(){
+    async getCurrentEmployee(called = false) {
         try {
             const employee = await axios.get("/api/employee/current-employee");
             return employee;
         }
         catch (error) {
-            console.log("Server :: VendorService :: getCurrentEmployee :: error :: ", error);
+            if (!called) {
+                console.log("Server :: VendorService :: getCurrentEmployee :: error :: ", error);
+            }
             return error.response;
         }
     }
     async getCurrentVendor() {
-        try{
+        try {
             let response;
-            const owner = await this.getCurrentOwner();
-            if(owner.status === 200){
+            const owner = await this.getCurrentOwner(true);
+            if (owner.status === 200) {
                 response = owner;
                 response.role = "admin";
                 return response;
             }
-            const employee = await this.getCurrentEmployee();
-            if(employee.status === 200){
+            const employee = await this.getCurrentEmployee(true);
+            if (employee.status === 200) {
                 response = employee;
                 response.role = "employee";
                 return response;
@@ -95,7 +99,7 @@ export class VendorService {
             return error.response;
         }
     }
-    async getAllEmployees({search = ""}){
+    async getAllEmployees({ search = "" }) {
         try {
             const employees = await axios.get(`/api/owner-dashboard/get-all-employees?search=${search}`);
             return employees;
@@ -105,7 +109,7 @@ export class VendorService {
             return error.response;
         }
     }
-    async toggleEmployeeActivation(employeeId){
+    async toggleEmployeeActivation(employeeId) {
         try {
             const response = await axios.patch(`/api/owner-dashboard/toggle-employee-activation/${employeeId}`);
             return response;
@@ -115,7 +119,7 @@ export class VendorService {
             return error.response;
         }
     }
-    async deleteEmployee(employeeId){
+    async deleteEmployee(employeeId) {
         try {
             const response = await axios.delete(`/api/owner-dashboard/delete-employee/${employeeId}`);
             return response;

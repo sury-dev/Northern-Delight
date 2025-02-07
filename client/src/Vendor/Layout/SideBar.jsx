@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom'
 function SideBar() {
 
     const vendorData = useSelector(state => state.auth.userData);
+    const vendorRole = useSelector(state => state.auth.role);
 
     return (
         <div className="sideBar">
@@ -20,7 +21,7 @@ function SideBar() {
             </div>
             <div className="divider"></div>
             <ul className="navUl">
-                <li>
+                {vendorRole === "admin" && <li>
                     <NavLink
                         to='/vendor'
                         end
@@ -29,7 +30,7 @@ function SideBar() {
                         <img src="/Dashboard.png" alt="Dashboard" />
                         Dashboard
                     </NavLink>
-                </li>
+                </li>}
                 <li>
                     <NavLink
                         to='/vendor/Orders'
@@ -39,7 +40,7 @@ function SideBar() {
                         Orders
                     </NavLink>
                 </li>
-                <li>
+                {vendorRole === "admin" && <li>
                     <NavLink
                         to='/vendor/employees'
                         className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
@@ -47,8 +48,8 @@ function SideBar() {
                         <img src="/Employees.png" alt="Employees" />
                         Employees
                     </NavLink>
-                </li>
-                <li>
+                </li>}
+                {vendorRole === "admin" && <li>
                     <NavLink
                         to='/vendor/menu'
                         className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
@@ -56,8 +57,8 @@ function SideBar() {
                         <img src="/Menu.png" alt="Menu" />
                         Menu
                     </NavLink>
-                </li>
-                <li>
+                </li>}
+                {vendorRole === "admin" && <li>
                     <NavLink
                         to='/vendor/coupons'
                         className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
@@ -65,8 +66,8 @@ function SideBar() {
                         <img src="/Coupons.png" alt="Coupons" />
                         Coupons
                     </NavLink>
-                </li>
-                <li>
+                </li>}
+                {vendorRole === "admin" && <li>
                     <NavLink
                         to='/vendor/customers'
                         className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
@@ -74,7 +75,7 @@ function SideBar() {
                         <img src="/Customers.png" alt="Customers" />
                         Customers
                     </NavLink>
-                </li>
+                </li>}
             </ul>
         </div>
     )
