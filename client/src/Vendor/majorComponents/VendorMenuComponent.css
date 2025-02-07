@@ -1,0 +1,8 @@
+.vendorMenuComponent {
+    position: relative;
+    padding-top: 80px;
+    /* Adjust the padding to account for the fixed header */
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(82, 167, 155, 0.5) rgba(0, 0, 0, 0.5);
+}

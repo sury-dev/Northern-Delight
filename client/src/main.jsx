@@ -8,7 +8,7 @@ import App from './App.jsx'
 import Vendor from './Vendor.jsx'
 import { VendorAuth, VendorDashboard } from './Vendor/pages/index.js'
 import VendorRouteProtector from './Vendor/auth/VendorRouteProtector.jsx'
-import { VendorLoginComponent, VendorSignupComponent, EmployeesComponent } from './Vendor/majorComponents/index.js'
+import { VendorLoginComponent, VendorSignupComponent, EmployeesComponent, VendorMenuComponent } from './Vendor/majorComponents/index.js'
 
 const router = createBrowserRouter([
   {
@@ -32,6 +32,14 @@ const router = createBrowserRouter([
             element: (
               <VendorRouteProtector authentication={true}>
                 <EmployeesComponent />
+              </VendorRouteProtector>
+            ),
+          },
+          {
+            path: 'menu',
+            element: (
+              <VendorRouteProtector authentication={true}>
+                <VendorMenuComponent />
               </VendorRouteProtector>
             ),
           }

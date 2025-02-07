@@ -6,7 +6,6 @@ import { NavLink } from 'react-router-dom'
 function SideBar() {
 
     const vendorData = useSelector(state => state.auth.userData);
-    console.log("Vendor Data: ", vendorData);
 
     return (
         <div className="sideBar">
