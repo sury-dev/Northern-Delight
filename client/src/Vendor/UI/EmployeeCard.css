@@ -135,13 +135,6 @@
     .employee-card{
         padding: 10px;
     }
-    .employee-profile-picture-section{
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
     .employee-info h3 {
         font-size: 1.1rem;
         line-height: 1.1rem;

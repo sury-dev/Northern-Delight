@@ -116,7 +116,7 @@
 }
 .employee-card-container{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
     gap: 20px; /* Space between items */
     padding: 10px;
     justify-items: stretch;
