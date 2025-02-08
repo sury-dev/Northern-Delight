@@ -53,6 +53,24 @@ export class VendorService {
             return error.response;
         }
     }
+
+    async logoutVendor(role) {
+        try {
+            let response;
+            if(role === "admin") {
+                const response = await axios.post("/api/owner/logout");
+                return response;
+            }
+            else {
+                const response = await axios.post("/api/employee/logout");
+                return response;
+            }
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: logoutVendor :: error :: ", error);
+            return error.response;
+        }
+    }
     async getCurrentOwner(called = false) {
         try {
             const owner = await axios.get("/api/owner/current-owner");
