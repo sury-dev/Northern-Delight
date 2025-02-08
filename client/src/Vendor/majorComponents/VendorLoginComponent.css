@@ -11,6 +11,8 @@
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    z-index: 10;
+    margin: 20px 10px;
 }
 
 .slider {
@@ -110,6 +112,7 @@
     border-radius: 50%;
     /* Light gray background */
     position: relative;
+    margin: 20px 0px;
 }
 
 .male-selector {
@@ -285,4 +288,28 @@
 }
 .inputs{
     padding: 20px 0;
+}
+
+/* Mobile View */
+@media screen and (max-width: 480px) {
+    .sbmtbtn{
+        background-color: #14b8a6;
+        color: white;
+    }
+    .avatar-box{
+        height: 100px;
+        width: 100px;
+    }
+    .male-selector{
+        height: 100px;
+        transform: translate(calc(-100% + 50px));
+        padding-left: 50px;
+        font-size: 0.8rem;
+    }
+    .female-selector{
+        height: 100px;
+        transform: translate(calc(100% - 50px));
+        padding-right: 50px;
+        font-size: 0.8rem;
+    }
 }

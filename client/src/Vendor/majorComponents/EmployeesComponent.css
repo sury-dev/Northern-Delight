@@ -122,3 +122,79 @@
     justify-items: stretch;
     padding: 20px 40px;
 }
+
+@media screen and (max-width: 1596px) {
+    .header {
+        flex-direction: column;
+        height: max-content;
+        position: unset;
+        width: 100%;
+        gap: 10px;
+    }
+    .employeesComponent{
+        padding-top: 0px;
+    }
+    .header-left{
+        justify-content: space-between;
+        width: 100%;
+    }
+    .header-left h3{
+        font-size: 1.1rem;
+        white-space: nowrap;
+    }
+    .header-right{
+        gap: 10px;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .status-filters label{
+        padding: 8px 16px;
+    }
+    .employee-card-container{
+        padding: 20px;
+    }
+    #searchBox{
+        height: 40px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        padding: 10px;
+        flex-direction: row;
+    }
+    .header-left {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    .header-right {
+        flex-direction: column-reverse;
+        justify-content: space-between;
+        align-items: flex-end;
+        max-width: max-content;
+        height: 100%;
+    }
+    .header-left h3 {
+        font-size: 1rem;
+    }
+    .status-filters label {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+    .employee-card-container {
+        padding: 10px;
+    }
+    #searchBox {
+        height: 30px;
+        width: 100%;
+        max-width: 150px;
+        font-size: 1rem;
+    }
+    .status-filters label{
+        padding: 5px 10px;
+    }
+    .employee-card-container{
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}

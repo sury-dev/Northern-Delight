@@ -35,7 +35,7 @@ function SideBar() {
             <div className="sideBar">
                 <div className="profile-picture-section">
                     <div className="image-container" style={{ "--dimension": "100px", "--border-size": "3px" }}>
-                        <img src={vendorData.avatar.url} alt="Profile" />
+                        <img src={vendorData.avatar?.url} alt="Profile" />
                     </div>
                     <div className="vendor-info">
                         <p>Welcome</p>
@@ -51,7 +51,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Dashboard.png" alt="Dashboard" />
-                            Dashboard
+                            <span>Dashboard</span>
                         </NavLink>
                     </li>}
                     <li>
@@ -60,7 +60,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Orders.png" alt="Orders" />
-                            Orders
+                            <span>Orders</span>
                         </NavLink>
                     </li>
                     {vendorRole === "admin" && <li>
@@ -69,7 +69,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Employees.png" alt="Employees" />
-                            Employees
+                            <span>Employees</span>
                         </NavLink>
                     </li>}
                     {vendorRole === "admin" && <li>
@@ -78,7 +78,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Menu.png" alt="Menu" />
-                            Menu
+                            <span>Menu</span>
                         </NavLink>
                     </li>}
                     {vendorRole === "admin" && <li>
@@ -87,7 +87,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Coupons.png" alt="Coupons" />
-                            Coupons
+                            <span>Coupons</span>
                         </NavLink>
                     </li>}
                     {vendorRole === "admin" && <li>
@@ -96,7 +96,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Customers.png" alt="Customers" />
-                            Customers
+                            <span>Customers</span>
                         </NavLink>
                     </li>}
                 </ul>
@@ -108,7 +108,7 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Profile.png" alt="Profile" />
-                            Profile
+                            <span>Profile</span>
                         </NavLink>
                     </li>
                     {/* <li>
@@ -117,13 +117,13 @@ function SideBar() {
                             className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                         >
                             <img src="/Settings.png" alt="Settings" />
-                            Settings
+                            <span>Settings</span>
                         </NavLink>
                     </li> */}
                     <li>
                         <button className="navBtns" onClick={() => setShowModal(true)}>
                             <img src="/Logout.png" alt="Logout" />
-                            Logout
+                            <span>Logout</span>
                         </button>
                     </li>
                 </ul>

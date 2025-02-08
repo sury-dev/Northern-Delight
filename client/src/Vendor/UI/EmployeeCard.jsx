@@ -14,7 +14,7 @@ function EmployeeCard({ _id, name, username, email, phoneNumber, vid, active, jo
                     <p className={active ? "active": ""}>{active ? "Active" : "Inactive"}</p>
                 </div>
             </div>
-            <div className="divider"></div>
+            <div className="employee-card-divider"></div>
             <div className="employee-details">
                 <div className="employee-details-item">
                     <img src="/ID.png" alt="ID" />

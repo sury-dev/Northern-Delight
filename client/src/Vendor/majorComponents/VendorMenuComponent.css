@@ -6,3 +6,87 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(82, 167, 155, 0.5) rgba(0, 0, 0, 0.5);
 }
+.add-menu-modal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #1E1E1E;
+    color: white;
+    padding: 20px 30px;
+    width: 500px;
+}
+.add-menu-modal h2{
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+.add-menu-modal form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+.add-menu-modal form input,
+.add-menu-modal form textarea {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 2px solid #2DD4BF;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+}
+
+.add-menu-modal form textarea {
+    resize: none; /* Prevents resizing */
+    height: 8rem;
+    border: 2px solid #2DD4BF;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.add-menu-modal form input:focus,
+.add-menu-modal form textarea:focus {
+    border-bottom: 2px solid #0D9488; /* Slightly darker for focus effect */
+}
+
+.add-menu-modal .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.add-menu-modal .modal-buttons button {
+    background-color: transparent;
+    color: #10B981;
+    border: 2px solid #10B981;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.add-menu-modal .modal-buttons button:hover {
+    background-color: #10B981;
+    color: white;
+}
+
+.add-menu-modal .modal-buttons button[type = "button"] {
+    background-color: transparent;
+    color: #D42D2D;
+    border: 2px solid #D42D2D;
+}
+
+.add-menu-modal .modal-buttons button[type = "button"]:hover {
+    background-color: #D42D2D;
+    color: white;
+}
+
+@media screen and (max-width: 1596px) {
+    .vendorMenuComponent{
+        padding-top: 0px;
+    }
+}

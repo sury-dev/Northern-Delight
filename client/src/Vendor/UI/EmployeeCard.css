@@ -124,3 +124,44 @@
     background-color: #10B981;
     color: white;
 }
+.employee-card-divider{
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+/* Mobile View */
+
+@media (max-width: 768px){
+    .employee-card{
+        padding: 10px;
+    }
+    .employee-profile-picture-section{
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .employee-info h3 {
+        font-size: 1.1rem;
+        line-height: 1.1rem;
+    }
+    .employee-info h4 {
+        font-size: 1rem;
+        line-height: 1rem;
+    }
+    .employee-details-item > img{
+        height: 1.3rem;
+    }
+    .employee-details-item > p{
+        font-size: 0.9rem;
+    }
+    .employee-ctc-btns{
+        flex-direction: column;
+    }
+    .employee-ctc-btn{
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+}

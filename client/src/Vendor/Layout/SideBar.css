@@ -10,7 +10,9 @@
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
+    min-width: max-content;
 }
+
 .navUl {
     width: 100%;
     list-style-type: none;
@@ -39,18 +41,20 @@
     border-radius: 5px;
 }
 
-.navBtns.active{
+.navBtns.active {
     background: #2dd4be42;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
 }
+
 .navBtns:hover {
     background: #2dd4be88;
 }
-.navBtns:active{
+
+.navBtns:active {
     transform: scale(0.95);
 }
 
-.navBtns img{
+.navBtns img {
     height: 1.5rem;
 }
 
@@ -58,18 +62,20 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-shrink: 0; /* Prevents collapsing */
+    flex-shrink: 0;
+    /* Prevents collapsing */
     width: 100%;
 }
 
 /* Image Container with Min Width */
 .image-container {
-    
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 30%; /* Ensures it's at least 30% of parent */
-    max-width: 100px; /* Limits size to prevent overflow */
+    min-width: 30%;
+    /* Ensures it's at least 30% of parent */
+    max-width: 100px;
+    /* Limits size to prevent overflow */
     height: 100px;
     border-radius: 50%;
     border: 3px solid #2DD4BF;
@@ -78,8 +84,10 @@
 
 /* Vendor Info with Truncation */
 .vendor-info {
-    flex-grow: 1; /* Takes remaining space */
-    max-width: 70%; /* Ensures it doesn't exceed 70% of parent */
+    flex-grow: 1;
+    /* Takes remaining space */
+    max-width: 70%;
+    /* Ensures it doesn't exceed 70% of parent */
     overflow: hidden;
 }
 
@@ -96,13 +104,15 @@
     font-size: 1.5rem;
     line-height: 1.7rem;
     margin: 0;
-    white-space: nowrap; /* Prevents text wrapping */
-    overflow: hidden; /* Hides overflow */
-    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    /* white-space: nowrap; Prevents text wrapping */
+    overflow: hidden;
+    /* Hides overflow */
+    text-overflow: ellipsis;
+    /* Adds "..." when text is too long */
     display: block;
 }
 
-.pushToEnd{
+.pushToEnd {
     margin-top: auto;
 }
 
@@ -149,15 +159,18 @@
     width: 100%;
 }
 
-.confirm-btn, .cancel-btn {
+.confirm-btn,
+.cancel-btn {
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    flex: 1; /* Makes both buttons take equal width */
-    width: 100%; /* Ensures full width */
+    flex: 1;
+    /* Makes both buttons take equal width */
+    width: 100%;
+    /* Ensures full width */
 }
 
 .confirm-btn {
@@ -180,4 +193,146 @@
 .cancel-btn:hover {
     background-color: #10B981;
     color: white;
+}
+
+/* Smaller Screens */
+
+@media screen and (max-width: 1596px) {
+    .sideBar {
+        width: 25%;
+        margin-left: 10px;
+    }
+
+    .profile-picture-section {
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Image Container with Min Width */
+    .image-container {
+        height: 70px;
+        width: 70px;
+        min-width: 70px;
+    }
+
+    /* Vendor Info with Truncation */
+    .vendor-info {
+        flex-grow: 1;
+        /* Takes remaining space */
+        max-width: 100%;
+        /* Ensures it doesn't exceed 70% of parent */
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .navBtns {
+        padding: 5px;
+    }
+}
+
+/* Tablet View */
+@media screen and (max-width: 768px) {
+    .sideBar {
+        width: max-content;
+    }
+
+    .navBtns span {
+        display: none;
+    }
+
+    .vendor-info {
+        display: none;
+    }
+
+    .image-container {
+        min-width: 50px;
+        width: 50px;
+        /* Ensures it's at least 50px of parent */
+        max-width: 50px;
+        /* Limits size to prevent overflow */
+        height: 50px;
+    }
+
+    .navBtns {
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+/* Mobile View */
+@media screen and (max-width: 480px) {
+    .sideBar {
+        max-width: 100%;
+        min-width: 100%;
+        height: max-content;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 999;
+        padding: 10px 0;
+        /* Remove side padding */
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+        box-sizing: border-box;
+        margin: 0;
+        overflow: scroll;
+    }
+
+    .navUl {
+        list-style-type: none;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        width: max-content;
+    }
+
+    /* Navigation Buttons */
+    .navBtns {
+        display: flex;
+        width: max-content;
+        height: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .navBtns span {
+        display: flex;
+        font-size: 0.8rem;
+    }
+
+    .navBtns:hover {
+        background: transparent;
+    }
+
+    .navBtns.active {
+        background: #2dd4be42;
+        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-picture-section {
+        display: none;
+    }
+
+    .image-container {
+        display: none;
+    }
+
+    .divider {
+        display: none;
+    }
 }
