@@ -35,11 +35,11 @@ function SideBar() {
             <div className="sideBar">
                 <div className="profile-picture-section">
                     <div className="image-container" style={{ "--dimension": "100px", "--border-size": "3px" }}>
-                        <img src={vendorData.avatar?.url} alt="Profile" />
+                        <img src={vendorData?.avatar?.url} alt="Profile" />
                     </div>
                     <div className="vendor-info">
                         <p>Welcome</p>
-                        <h3>{vendorData.name}</h3>
+                        <h3>{vendorData?.name}</h3>
                     </div>
                 </div>
                 <div className="divider"></div>

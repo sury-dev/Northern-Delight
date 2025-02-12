@@ -21,7 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 4rem; /* Limits size to prevent overflow */
+    max-width: 4rem;
     height: 4rem;
     min-height: 4rem;
     border-radius: 50%;
@@ -29,8 +29,8 @@
     overflow: hidden;
 }
 .employee-info{
-    flex-grow: 1; /* Takes remaining space */
-    max-width: 70%; /* Ensures it doesn't exceed 70% of parent */
+    flex-grow: 1;
+    max-width: 70%;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -53,9 +53,9 @@
     font-size: 1.3rem;
     line-height: 1.3rem;
     margin: 0;
-    white-space: nowrap; /* Prevents text wrapping */
-    overflow: hidden; /* Hides overflow */
-    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: block;
 }
 .employee-info h4 {
@@ -63,9 +63,9 @@
     font-size: 1.1rem;
     line-height: 1.1rem;
     margin: 0;
-    white-space: nowrap; /* Prevents text wrapping */
-    overflow: hidden; /* Hides overflow */
-    text-overflow: ellipsis; /* Adds "..." when text is too long */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: block;
 }
 .employee-details-item{

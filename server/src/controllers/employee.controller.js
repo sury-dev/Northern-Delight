@@ -6,7 +6,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import fs from "fs";
 import jwt from "jsonwebtoken";
 import ActivityLogger, { addLog } from "../utils/activityLogger.js";
-import { count } from "console";
 
 const userType = "employee";
 

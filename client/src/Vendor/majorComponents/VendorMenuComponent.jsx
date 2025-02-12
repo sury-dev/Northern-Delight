@@ -54,6 +54,11 @@ function VendorMenuComponent() {
         closeFoodModal();
     };
 
+    const onSubmitCategory = (data) => {
+        console.log("New Category:", data);
+        closeCategoryModal();
+    }
+
     if (!isAuthorized) {
         return null;
     }
@@ -122,11 +127,11 @@ function VendorMenuComponent() {
                 <div className="modal-overlay" onClick={closeCategoryModal}>
                     <div className="add-menu-modal" onClick={(e) => e.stopPropagation()}>
                         <h2>Add a Category</h2>
-                        <form>
-                            <input type="text" placeholder="Category Name" required />
-                            <textarea placeholder="Category Description" required />
+                        <form onSubmit={handleSubmit(onSubmitCategory)}>
+                            <input type="text" placeholder="Category Name" {...register("categoryName")} required />
+                            <textarea placeholder="Food Description" {...register("categoryDescription")} required />
                             <div className="modal-buttons">
-                                <button type="submit">Create Category</button>
+                                <button type="submit">Add Category</button>
                                 <button type="button" onClick={closeCategoryModal}>Cancel</button>
                             </div>
                         </form>
