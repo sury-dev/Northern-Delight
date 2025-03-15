@@ -56,4 +56,5 @@ foodItemSchema.pre("save", function(next) {
     next();
 });
 
-const FoodItem = mongoose.model("FoodItem", foodItemSchema);
+export const FoodItem = mongoose.model("FoodItem", foodItemSchema);
+

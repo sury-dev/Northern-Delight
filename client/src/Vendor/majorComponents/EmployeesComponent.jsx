@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 function EmployeesComponent() {
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(""); // To store the search query
-    const [statusFilter, setStatusFilter] = useState("All"); // To store selected status filter (All/Active/Inactive)
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("All");
     const [fetchingError, setFetchingError] = useState(false);
     const [loading, setLoading] = useState(true);
 

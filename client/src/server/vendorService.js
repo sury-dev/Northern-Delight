@@ -147,6 +147,48 @@ export class VendorService {
             return error.response;
         }
     }
+    async fetchFoodCategories(){
+        try {
+            const response = await axios.get("/api/food-category/fetch");
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: fetchFoodCategories :: error :: ", error);
+            return error.response;
+        }
+    }
+    async createFoodCategory({ categoryName, categoryDescription }) {
+        try {
+            const response = await axios.post("/api/food-category/create", { categoryName, categoryDescription });
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: createFoodCategory :: error :: ", error);
+            return error.response;
+        }
+    }
+
+    async deleteFoodCategory(categoryId) {
+        try {
+            const response = await axios.delete(`/api/food-category/delete/${categoryId}`);
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: deleteFoodCategory :: error :: ", error);
+            return error.response;
+        }
+    }
+
+    async updateFoodCategory({ categoryId, categoryName, categoryDescription }) {
+        try {
+            const response = await axios.patch(`/api/food-category/update/${categoryId}`, { categoryName, categoryDescription });
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: updateFoodCategory :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const vendorService = new VendorService();

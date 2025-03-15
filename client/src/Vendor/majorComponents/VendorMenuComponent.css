@@ -85,6 +85,62 @@
     color: white;
 }
 
+.addItemBtn{
+    background: transparent;
+    padding: 10px 20px;
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.addItemBtn:hover{
+    background: var(--themeColor);
+    color: white;
+}
+
+.vendorMenuContainer {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box; 
+}
+.categories{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.category{
+    padding: 10px 20px;
+    background: #1E1E1E;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.category-header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.category-header h4{
+    font-size: 1rem;
+    padding: 5px;
+}
+.category-line1{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px;
+}
+.category-line1 h3{
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+
 @media screen and (max-width: 1596px) {
     .vendorMenuComponent{
         padding-top: 0px;
