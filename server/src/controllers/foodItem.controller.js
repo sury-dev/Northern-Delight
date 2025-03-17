@@ -16,6 +16,10 @@ const createFoodItem = asyncHandler(async (req, res) => {
             throw new ApiError(403, "Unauthorized access");
         }
 
+        if (!req.file) {
+            throw new ApiError(400, "Image is required");
+        }
+
         const { name, description, category, price, investmentAmount, ingredients, availability } = req.body;
 
         if (!name || !description || !price || !investmentAmount) {
