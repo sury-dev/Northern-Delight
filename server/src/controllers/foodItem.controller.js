@@ -47,12 +47,12 @@ const createFoodItem = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Food item already exists");
         }
 
-        if (!req.file?.path) {
+        if (!req.file?.buffer) {
             throw new ApiError(400, "Image is required");
         }
 
-        const imageObj = await uploadOnCloudinary(req.file.path, "foodItems");
-        const imageUrl = imageObj?.url;
+        const imageObj = await uploadOnCloudinary(req.file.buffer, "foodItems");
+        const imageUrl = imageObj?.secure_url;
 
         const foodItem = await FoodItem.create({
             name,
