@@ -7,31 +7,61 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadOnCloudinary = async (localFilePath, cloudinaryFolderPath = "") => {
+// const uploadOnCloudinary = async (localFilePath, cloudinaryFolderPath = "") => {
+//     try {
+//         if (!localFilePath) return null;
+//         //upload file on cloudinary
+//         const response = await cloudinary.uploader.upload(localFilePath, {
+//             resource_type: "auto",
+//             folder: "Northern_Delight/Development/" + cloudinaryFolderPath
+//         })
+//         //file has been uploaded successfully
+//         // try {
+//         //     fs.unlinkSync(localFilePath);
+//         // } catch (error) {
+//         //     console.log("Error in removing file : ", error);
+//         // }
+//         return response;
+//     }
+//     catch (err) {
+//         // try {
+//         //     fs.unlinkSync(localFilePath);
+//         // } catch (error) {
+//         //     console.log("Error in removing file : ", error);
+//         // }
+//         return null;
+//     }
+// }
+
+const uploadOnCloudinary = async (buffer, cloudinaryFolderPath = "") => {
     try {
-        if (!localFilePath) return null;
-        //upload file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto",
-            folder: "Northern_Delight/Development/" + cloudinaryFolderPath
-        })
-        //file has been uploaded successfully
-        // try {
-        //     fs.unlinkSync(localFilePath);
-        // } catch (error) {
-        //     console.log("Error in removing file : ", error);
-        // }
-        return response;
-    }
-    catch (err) {
-        // try {
-        //     fs.unlinkSync(localFilePath);
-        // } catch (error) {
-        //     console.log("Error in removing file : ", error);
-        // }
+        if (!buffer) return null;
+
+        // Upload file to Cloudinary from buffer
+        return new Promise((resolve, reject) => {
+            const stream = cloudinary.v2.uploader.upload_stream(
+                {
+                    resource_type: "auto",
+                    folder: "Northern_Delight/Development/" + cloudinaryFolderPath
+                },
+                (error, result) => {
+                    if (error) {
+                        console.error("Cloudinary Upload Error:", error);
+                        reject(null);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
+
+            stream.end(buffer); // Send buffer to Cloudinary
+        });
+
+    } catch (err) {
+        console.error("Upload to Cloudinary failed:", err);
         return null;
     }
-}
+};
 
 const deleteFromCloudinary = async (publicId, resourceType = "image") => {
     try {
