@@ -89,16 +89,8 @@ const createFoodItem = asyncHandler(async (req, res) => {
             new ApiResponse(201, foodItem, "Food item created successfully")
         );
     } catch (error) {
-        if(req.file?.path){
-            try {
-                fs.unlinkSync(req.file.path);
-            } catch (error) {
-                console.error("Error while deleting file:", error);
-            }
-        }
-        console.log("Error while creating food item Server:", error);
         return res.status(error?.statusCode || 500).json(
-            new ApiResponse(error?.statusCode || 500, {error}, error || "Something went wrong while creating food item")
+            new ApiResponse(error?.statusCode || 500, {}, error?.message || "Something went wrong while creating food item")
         );
     }
 });
