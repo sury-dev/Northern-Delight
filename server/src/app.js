@@ -37,6 +37,7 @@ import employeeRouter from "./routes/employee.routes.js"
 import activityLoggerRouter from "./routes/activityLogger.routes.js"
 import ownerDashboardRouter from "./routes/ownerDashboard.routes.js"
 import foodCategoryRouter from "./routes/foodCategory.routes.js"
+import foodItemRouter from "./routes/foodItem.routes.js"
 
 // routes declaration
 
@@ -45,6 +46,7 @@ app.use("/api/employee", employeeRouter);
 app.use("/api/activity-logger", activityLoggerRouter);
 app.use("/api/owner-dashboard", ownerDashboardRouter);
 app.use("/api/food-category", foodCategoryRouter);
+app.use("/api/food-item", foodItemRouter);
 
 
 // Secured routes

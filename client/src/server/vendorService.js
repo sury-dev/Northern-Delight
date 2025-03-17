@@ -189,6 +189,39 @@ export class VendorService {
             return error.response;
         }
     }
+
+    async createFoodItem({name, description, price, category, image, ingredients, investmentAmount}){
+        try {
+            const formData = new FormData();
+            const fields = { name, description, price, category, ingredients, investmentAmount, price };
+            Object.entries(fields).forEach(([key, value]) => formData.append(key, value));
+
+            formData.append("image", image);
+
+            const response = await axios.post("/api/food-item/create", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: createFoodItem :: error :: ", error);
+            return error.response;
+        }
+    }
+
+    async fetchFoodItems(){
+        try {
+            const response = await axios.get("/api/food-item/fetch");
+            return response;
+        }
+        catch (error) {
+            console.log("Server :: VendorService :: fetchFoodItems :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const vendorService = new VendorService();

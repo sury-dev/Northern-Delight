@@ -1,13 +1,9 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { Employee } from "../models/employee.model.js";
-import { Owner } from "../models/owner.model.js";
 import { FoodCategory } from "../models/foodCategory.model.js";
 import { FoodItem } from "../models/foodItem.model.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import fs from "fs";
-import jwt from "jsonwebtoken";
 import ActivityLogger, { addLog } from "../utils/activityLogger.js";
 import mongoose from "mongoose";
 

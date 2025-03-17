@@ -5,6 +5,7 @@
     overflow-y: scroll;
     scrollbar-width: thin;
     scrollbar-color: rgba(82, 167, 155, 0.5) rgba(0, 0, 0, 0.5);
+    max-height: 100%;
 }
 .add-menu-modal{
     display: flex;
@@ -138,6 +139,160 @@
 .category-line1 h3{
     font-size: 1.2rem;
     font-weight: 500;
+}
+
+.foods {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+    gap: 10px;
+    padding: 10px 0px;
+}
+
+.add-food-menu-modal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1E1E1E;
+    color: white;
+    padding: 20px 30px;
+    min-width: 500px;
+    width: 80%;
+    gap: 20px;
+    height: 80vh;
+}
+
+.add-food-menu-modal form{
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(82, 167, 155, 0.5) rgba(0, 0, 0, 0.5);
+    padding: 20px;
+}
+
+.add-food-menu-modal form h2{
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+}
+
+.add-food-menu-modal form input{
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+}
+
+.add-food-menu-modal form textarea{
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    resize: none;
+    min-height: 100px;
+    height: 100px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(82, 167, 155, 0.5) rgba(0, 0, 0, 0.5);
+}
+
+.add-food-menu-modal form select{
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+}
+
+.add-food-menu-modal form input[type="file"]{
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.add-food-menu-modal form input[type="file"]:hover{
+    background: #2dd4be77;
+}
+
+.add-food-menu-modal form .ingredients-section{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+.add-food-menu-modal form .ingredients-section button{
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.add-food-menu-modal form .ingredients-section button:hover{
+    background: #2dd4be77;
+}
+
+.add-food-menu-modal form .ingredient-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    gap: 10px;
+    width: 100%;
+    padding: 0px 20px;
+}
+
+.add-food-menu-modal form .ingredient-list .ingredient-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #2dd4be;
+    color: white;
+    border-radius: 5px;
+}
+
+.add-food-menu-modal form .ingredient-list .ingredient-item span{
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.add-food-menu-modal form .ingredient-list .ingredient-item button{
+    background: #011;
+    color: white;
+    border: none;
+    padding: 2px 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.add-food-menu-modal form .modal-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+.add-food-menu-modal form .modal-buttons button{
+    flex: 1;
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.add-food-menu-modal form .modal-buttons button:hover{
+    background: #2dd4be77;
+}
+
+.food-item-preview{
+    padding: 20px;
+    background-color: #fff;
 }
 
 

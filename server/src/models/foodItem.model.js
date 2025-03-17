@@ -37,7 +37,7 @@ const foodItemSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    imageUrl: {
+    image: {
         type: {
             url: { type: String, required: true },
             public_id: { type: String, required: false, default: null },

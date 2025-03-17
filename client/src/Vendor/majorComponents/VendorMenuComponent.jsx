@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { set, useForm } from 'react-hook-form';
 import './VendorMenuComponent.css';
 import vendorService from '../../server/vendorService';
+import { FoodItemCustomerCard } from '../UI';
 
 function VendorMenuComponent() {
     const vendorRole = useSelector(state => state.auth.role);
@@ -15,37 +16,40 @@ function VendorMenuComponent() {
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [categories, setCategories] = useState([]);
     const [categoryBeingUpdated, setCategoryBeingUpdated] = useState(null);
-    const { register, handleSubmit, reset } = useForm();
-    const foodItems = [
-        {
-            _id: "1",
-            foodName: "Chicken Biryani",
-            foodDescription: "A delicious plate of chicken biryani",
-            category: "Starter",
-        },
-        {
-            _id: "2",
-            foodName: "Paneer Butter Masala",
-            foodDescription: "A delicious plate of paneer butter masala",
-            category: "Starter",
-        },
-        {
-            _id: "3",
-            foodName: "Gulab Jamun",
-            foodDescription: "A delicious plate of gulab jamun",
-            category: "Starters",
-        },
-        {
-            _id: "4",
-            foodName: "Veg Manchurian",
-            foodDescription: "A delicious plate of veg manchurian",
-            category: "Starters",
-        },
-    ]
+
+    const [imagePreview, setImagePreview] = useState("https://imgs.search.brave.com/gGdDeyrLuXWBjr13dn3o3XfWOCpQIhK15WOb0Mi2NzI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAxLzE1LzY1LzY1/LzM2MF9GXzExNTY1/NjU0Ml8yOUNYN0NH/UFh1ZFNiM0RUcDI1/aGNRRFplbzNkamlU/Yy5qcGc");
+    const [ingredients, setIngredients] = useState([]);
+    const [ingredientInput, setIngredientInput] = useState("");
+
+    const { register, handleSubmit, reset, watch } = useForm();
+    const [foodItems, setFoodItems] = useState([]);
 
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value.toLowerCase());
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        console.log("Here")
+        if (file) {
+            const newImageUrl = URL.createObjectURL(file);
+            console.log("Selected File:", file);
+            console.log("Generated Preview URL:", newImageUrl);
+            setImagePreview(newImageUrl);
+        }
+    };
+
+
+    const addIngredient = () => {
+        if (ingredientInput.trim()) {
+            setIngredients([...ingredients, ingredientInput.trim()]);
+            setIngredientInput("");
+        }
+    };
+
+    const removeIngredient = (index) => {
+        setIngredients(ingredients.filter((_, i) => i !== index));
     };
 
     useEffect(() => {
@@ -63,11 +67,18 @@ function VendorMenuComponent() {
         }
     }
 
+    const fetchFoodItems = async () => {
+        const fetchedFoodItems = await vendorService.fetchFoodItems();
+        if (fetchedFoodItems && fetchedFoodItems.status === 200) {
+            setFoodItems(fetchedFoodItems.data.data);
+        }
+    }
+
 
     const handlecategoryUpdate = async (data) => {
         console.log("Updating Category:", data);
         // Update the categories using _id from categoryBeingUpdated
-        const response = await vendorService.updateFoodCategory({categoryId : categoryBeingUpdated, ...data});
+        const response = await vendorService.updateFoodCategory({ categoryId: categoryBeingUpdated, ...data });
         if (response && response.status === 200) {
             console.log("Category updated successfully");
             const updatedCategories = categories.map((category) => {
@@ -86,6 +97,8 @@ function VendorMenuComponent() {
     useEffect(() => {
         // Fetch all categories
         fetchFoodCategories();
+        // Fetch all food items
+        fetchFoodItems();
     }, []);
 
     const openComboModal = () => setIsComboModalOpen(true);
@@ -110,14 +123,30 @@ function VendorMenuComponent() {
         closeComboModal();
     };
 
-    const onSubmitFood = (data) => {
-        console.log("New Food Item:", data);
+    const onSubmitFood = async (data) => {
+        const obj = {
+            ...data,
+            ingredients,
+            image: data.image[0]
+        };
+        console.log("New Food Item:", obj);
+        const response = await vendorService.createFoodItem({ ...obj });
+        if (response && response.status === 201) {
+            setFoodItems([response.data.data, ...foodItems]);
+        } else {
+            console.error("Error creating food item:", response);
+            // return;
+        }
+        setIngredients([]);
+        setIngredientInput("");
+        reset();
         closeFoodModal();
+
     };
 
     const onSubmitCategory = async (data) => {
         console.log("New Category:", data);
-        const response = await vendorService.createFoodCategory({...data});
+        const response = await vendorService.createFoodCategory({ ...data });
         if (response && response.status === 201) {
             setCategories([...categories, response.data.data]);
         } else {
@@ -141,7 +170,6 @@ function VendorMenuComponent() {
     if (!isAuthorized) {
         return null;
     }
-
 
     return (
         <div className="vendorMenuComponent w-full h-full relative">
@@ -175,7 +203,7 @@ function VendorMenuComponent() {
                 <div className="categories">
                     {
                         categories.map((category) => {
-                            const filteredFoodItems = foodItems.filter((foodItem) => foodItem.category === category.categoryName);
+                            const filteredFoodItems = foodItems.filter((foodItem) => foodItem.category === category._id);
                             return (
                                 <div className="category" key={category._id}>
                                     {
@@ -227,15 +255,7 @@ function VendorMenuComponent() {
                                         {
                                             filteredFoodItems.map((foodItem) => {
                                                 return (
-                                                    <div className="food" key={foodItem._id}>
-                                                        <div className="food-header">
-                                                            <h3>{foodItem.foodName}</h3>
-                                                            <div className="food-cta">
-                                                                <button>Edit</button>
-                                                            </div>
-                                                        </div>
-                                                        <h4>{foodItem.foodDescription}</h4>
-                                                    </div>
+                                                    <FoodItemCustomerCard key={foodItem._id} {...foodItem} imageUrl={foodItem.image.url} />
                                                 )
                                             })
                                         }
@@ -267,13 +287,71 @@ function VendorMenuComponent() {
 
             {isFoodModalOpen && (
                 <div className="modal-overlay" onClick={closeFoodModal}>
-                    <div className="add-menu-modal" onClick={(e) => e.stopPropagation()}>
-                        <h2>Add a Food Item</h2>
+                    <div className="add-food-menu-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="food-item-preview">
+                            <FoodItemCustomerCard
+                                availability={true}
+                                name={watch("name", "Title Here")}
+                                description={watch("description", "Description Here")}
+                                price={watch("price", 99)}
+                                imageUrl={imagePreview} />
+                        </div>
                         <form onSubmit={handleSubmit(onSubmitFood)}>
-                            <input type="text" placeholder="Food Item Name" {...register("foodName")} required />
-                            <textarea placeholder="Food Description" {...register("foodDescription")} required />
+                            <h2>Add a Food Item</h2>
+                            {/* Image Upload */}
+                            <input
+                                type="file"
+                                id="image"
+                                accept="image/*"
+                                {...register("image", {
+                                    required: true,
+                                    onChange: (e) => handleImageChange(e) // Ensuring file is set
+                                })}
+                            />
+                            <input type="text" placeholder="Food Name" {...register("name")} required />
+                            <textarea placeholder="Food Description" {...register("description")} required />
+                            <select {...register("category")} required>
+                                <option value="">Select Category</option>
+                                {categories.map((category) => (
+                                    <option key={category._id} value={category._id}>{category.categoryName}</option>
+                                ))}
+                            </select>
+                            <input type="number" placeholder="Price" {...register("price")} required />
+                            <input type="number" placeholder="Investment Amount" {...register("investmentAmount")} required />
+                            <input
+                                type="number"
+                                placeholder="Profit"
+                                value={
+                                    watch("price") && watch("investmentAmount")
+                                        ? watch("price", 0) - watch("investmentAmount", 0)
+                                        : ""
+                                }
+                                disabled
+                                {...register("profit")}
+                            />
+
+
+
+
+                            {/* Ingredients Input */}
+                            <div className="ingredients-section">
+                                <input type="text" placeholder="Add Ingredient"
+                                    value={ingredientInput}
+                                    onChange={(e) => setIngredientInput(e.target.value)} />
+                                <button type="button" onClick={addIngredient}>Add</button>
+                            </div>
+                            <ul className="ingredient-list">
+                                {ingredients.map((ing, index) => (
+                                    <li key={index} className="ingredient-item">
+                                        <span>{ing}</span>
+                                        <button type="button" className="remove-ingredient" onClick={() => removeIngredient(index)}>✖</button>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* Buttons */}
                             <div className="modal-buttons">
-                                <button type="submit">Create Food Item</button>
+                                <button type="submit">Add Food Item</button>
                                 <button type="button" onClick={closeFoodModal}>Cancel</button>
                             </div>
                         </form>
