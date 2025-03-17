@@ -39,7 +39,7 @@ const uploadOnCloudinary = async (buffer, cloudinaryFolderPath = "") => {
 
         // Upload file to Cloudinary from buffer
         return new Promise((resolve, reject) => {
-            const stream = cloudinary.v2.uploader.upload_stream(
+            const stream = cloudinary.uploader.upload_stream(
                 {
                     resource_type: "auto",
                     folder: "Northern_Delight/Development/" + cloudinaryFolderPath
