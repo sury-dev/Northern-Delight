@@ -16,19 +16,19 @@ const uploadOnCloudinary = async (localFilePath, cloudinaryFolderPath = "") => {
             folder: "Northern_Delight/Development/" + cloudinaryFolderPath
         })
         //file has been uploaded successfully
-        try {
-            fs.unlinkSync(localFilePath);
-        } catch (error) {
-            console.log("Error in removing file : ", error);
-        }
+        // try {
+        //     fs.unlinkSync(localFilePath);
+        // } catch (error) {
+        //     console.log("Error in removing file : ", error);
+        // }
         return response;
     }
     catch (err) {
-        try {
-            fs.unlinkSync(localFilePath);
-        } catch (error) {
-            console.log("Error in removing file : ", error);
-        }
+        // try {
+        //     fs.unlinkSync(localFilePath);
+        // } catch (error) {
+        //     console.log("Error in removing file : ", error);
+        // }
         return null;
     }
 }
